@@ -1,37 +1,43 @@
 package com.example.navegacion.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavType
+import androidx.compose.foundation.layout.Box
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import com.example.navegacion.views.DetailView
 import com.example.navegacion.views.HomeView
-import com.example.navegacion.views.ExtraView
+import com.example.navegacion.views.AnosPerrunosView
+import com.example.navegacion.views.EntradaTextoView
+import com.example.navegacion.views.LoteriaView
+import com.example.navegacion.viewModels.LoteriaViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.navegacion.components.FloatingNavigationButtons
 
 @Composable
-fun NavManager(){
+fun NavManager() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "Home"  ){
-        composable("Home"){
-            HomeView(navController)
+
+    Box(modifier = Modifier.fillMaxSize()) {
+
+        NavHost(navController = navController, startDestination = "Home") {
+            composable("Home") {
+                HomeView(navController)
+            }
+            composable("AnosPerrunos") {
+                AnosPerrunosView(navController)
+            }
+            composable("EntradaTexto") {
+                EntradaTextoView(navController)
+            }
+            composable("Loteria") {
+                val loteriaViewModel: LoteriaViewModel = viewModel()
+                LoteriaView(viewModel = loteriaViewModel)
+            }
         }
-        composable("Detail/{id}/?{opcional}", arguments = listOf(
-            navArgument("id") { type = NavType.IntType },
-            navArgument("opcional") { type = NavType.StringType },
-        )){
-            val id = it.arguments?.getInt("id") ?: 0
-            val opcional = it.arguments?.getString("opcional") ?: ""
-            DetailView(navController, id, opcional)
-        }
-        composable("Extra/{id}/?{opcional}", arguments = listOf(
-            navArgument("id") { type = NavType.IntType },
-            navArgument("opcional") { type = NavType.StringType },
-        )) {
-            val id = it.arguments?.getInt("id") ?: 0
-            val opcional = it.arguments?.getString("opcional") ?: ""
-            ExtraView(navController, id, opcional)
-        }
+
+        FloatingNavigationButtons(navController = navController)
     }
 }
